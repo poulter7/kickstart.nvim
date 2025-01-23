@@ -2,6 +2,24 @@
 --  I promise not to create any merge conflicts in this directory :)
 --
 -- See the kickstart.nvim README for more information
+
+local function list_insert_unique(dst, src)
+  if not dst then
+    dst = {}
+  end
+  local added = {}
+  for _, val in ipairs(dst) do
+    added[val] = true
+  end
+  for _, val in ipairs(src) do
+    if not added[val] then
+      table.insert(dst, val)
+      added[val] = true
+    end
+  end
+  return dst
+end
+
 return {
   {
     'anuvyklack/windows.nvim',
@@ -30,6 +48,7 @@ return {
   {
     'rebelot/kanagawa.nvim',
     config = function()
+      --set colorscheme
       require('kanagawa').setup {
         overrides = function() -- add/modify highlights
           return {
@@ -199,5 +218,87 @@ return {
     config = function()
       require('autosave').setup {}
     end,
+  },
+  {
+    'stevearc/resession.nvim',
+    opts = {},
+  },
+  {
+    'mrjones2014/smart-splits.nvim',
+  },
+  {
+    'mfussenegger/nvim-dap-python',
+    config = function()
+      local dap_python = require 'dap-python'
+      local adapter_python_path = require('mason-registry').get_package('debugpy'):get_install_path() .. '/venv/bin/python'
+
+      dap_python.setup(adapter_python_path)
+    end,
+    dependencies = {
+      { 'igorlfs/nvim-dap-view', opts = {} },
+    },
+  },
+  {
+    'williamboman/mason-lspconfig.nvim', -- use mason-lspconfig to configure LSP installations
+    -- overrides `require("mason-lspconfig").setup(...)`
+    opts = function(_, opts)
+      -- add more things to the ensure_installed table protecting against community packs modifying it
+      opts.ensure_installed = list_insert_unique(opts.ensure_installed, {
+        'lua_ls',
+        'basedpyright',
+        -- add more arguments for adding more language servers
+      })
+    end,
+  },
+  {
+    'jay-babu/mason-null-ls.nvim', -- use mason-null-ls to configure Formatters/Linter installation for null-ls sources
+    -- overrides `require("mason-null-ls").setup(...)`
+    event = { 'BufReadPre', 'BufNewFile' },
+    dependencies = {
+      'williamboman/mason.nvim',
+      'nvimtools/none-ls.nvim',
+    },
+    opts = function(_, opts)
+      -- add more things to the ensure_installed table protecting against community packs modifying it
+      opts.ensure_installed = list_insert_unique(opts.ensure_installed, {
+        'prettier',
+        'stylua',
+        -- add more arguments for adding more null-ls sources
+      })
+    end,
+  },
+  {
+    'jay-babu/mason-nvim-dap.nvim',
+    -- overrides `require("mason-nvim-dap").setup(...)`
+    opts = function(_, opts)
+      -- add more things to the ensure_installed table protecting against community packs modifying it
+      opts.ensure_installed = list_insert_unique(opts.ensure_installed, {
+        'python',
+        -- add more arguments for adding more debuggers
+      })
+    end,
+  },
+  {
+    'linux-cultist/venv-selector.nvim',
+    dependencies = {
+      'neovim/nvim-lspconfig',
+      'mfussenegger/nvim-dap',
+      'mfussenegger/nvim-dap-python', --optional
+      { 'nvim-telescope/telescope.nvim', branch = '0.1.x', dependencies = { 'nvim-lua/plenary.nvim' } },
+    },
+    lazy = false,
+    branch = 'regexp', -- This is the regexp branch, use this for the new version
+    config = function()
+      require('venv-selector').setup()
+    end,
+    keys = {
+      { ',v', '<cmd>VenvSelect<cr>' },
+    },
+  },
+  {
+    'numToStr/Comment.nvim',
+    opts = {
+      -- add any options here
+    },
   },
 }
