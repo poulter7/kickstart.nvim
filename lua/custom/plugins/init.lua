@@ -101,40 +101,6 @@ return {
   {
     'smoka7/hop.nvim',
     opts = {},
-    keys = {
-      {
-        'f',
-        function()
-          require('hop').hint_words { multi_windows = true }
-        end,
-        mode = { 'n' },
-        desc = 'Hop hint words',
-      },
-      {
-        '<S-f>',
-        function()
-          require('hop').hint_lines { multi_windows = true }
-        end,
-        mode = { 'n' },
-        desc = 'Hop hint lines',
-      },
-      {
-        'f',
-        function()
-          require('hop').hint_words { extend_visual = true }
-        end,
-        mode = { 'v' },
-        desc = 'Hop hint words',
-      },
-      {
-        '<S-f>',
-        function()
-          require('hop').hint_lines { extend_visual = true }
-        end,
-        mode = { 'v' },
-        desc = 'Hop hint lines',
-      },
-    },
   },
   {
     'zbirenbaum/copilot.lua',
@@ -145,14 +111,6 @@ return {
   },
   {
     'rcarriga/nvim-dap-ui',
-    config = function(plugin, opts)
-      -- TODO: don't exit UI when last session is closed
-      -- disable dap events that are created
-      -- local dap = require 'dap'
-      --
-      -- dap.listeners.before.event_terminated['dapui_config'] = nil
-      -- dap.listeners.before.event_exited['dapui_config'] = nil
-    end,
   },
   {
     'nvim-neotest/neotest',
@@ -291,9 +249,6 @@ return {
     config = function()
       require('venv-selector').setup()
     end,
-    keys = {
-      { '<Leader>cv', '<cmd>VenvSelect<cr>' },
-    },
   },
   {
     'numToStr/Comment.nvim',
@@ -303,34 +258,27 @@ return {
   {
     'mikavilpas/yazi.nvim',
     event = 'VeryLazy',
-    keys = {
-      -- 👇 in this section, choose your own keymappings!
-      {
-        '<leader>f-',
-        mode = { 'n', 'v' },
-        '<cmd>Yazi<cr>',
-        desc = '[F]ind using [Y]azi',
-      },
-      {
-        -- Open in the current working directory
-        '<leader>f_',
-        '<cmd>Yazi cwd<cr>',
-        desc = '[F]ind using [Y]azi in the cwd',
-      },
-
-      {
-        -- NOTE: this requires a version of yazi that includes
-        -- https://github.com/sxyazi/yazi/pull/1305 from 2024-07-18
-        '<c-up>',
-        '<cmd>Yazi toggle<cr>',
-        desc = 'Resume the last yazi session',
-      },
-    },
     opts = {
       -- if you want to open yazi instead of netrw, see below for more info
       open_for_directories = false,
-      keymaps = {
-        show_help = '<f1>',
+    },
+  },
+  {
+    'nvim-neo-tree/neo-tree.nvim',
+    version = '*',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-tree/nvim-web-devicons', -- not strictly required, but recommended
+      'MunifTanjim/nui.nvim',
+    },
+    cmd = 'Neotree',
+    opts = {
+      filesystem = {
+        window = {
+          mappings = {
+            ['q'] = 'close_window',
+          },
+        },
       },
     },
   },

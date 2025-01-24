@@ -1,26 +1,4 @@
--- keybindings
-local wk = require 'which-key'
---- nav
-vim.keymap.set('n', '<C-h>', require('smart-splits').move_cursor_left)
-vim.keymap.set('n', '<C-j>', require('smart-splits').move_cursor_down)
-vim.keymap.set('n', '<C-k>', require('smart-splits').move_cursor_up)
-vim.keymap.set('n', '<C-l>', require('smart-splits').move_cursor_right)
-vim.keymap.set('n', '-', '<Cmd>split<CR>')
-vim.keymap.set('n', '|', '<Cmd>vsplit<CR>')
-vim.keymap.set('n', '<C-w>=', '<Cmd>WindowsEqualize<CR>')
-vim.keymap.set('n', '<C-w>+', '<Cmd>WindowsMaximize<CR>')
-
---- toggle term
-vim.keymap.set('n', '\\', '<Cmd>execute v:count . "ToggleTerm"<CR>')
-vim.keymap.set('t', '\\', '<Cmd>ToggleTerm<CR>')
-
 --- buffer pick
-wk.add {
-  { '<leader>b', group = '[B]uffers' },
-}
-vim.keymap.set('n', '<Leader>bb', '<Cmd>BufferPick<CR>')
-vim.keymap.set('n', '<Leader>bD', '<Cmd>BufferPickDelete<CR>')
-
 require('Comment').setup {
   toggler = {
     line = '<Leader>cc',
@@ -32,8 +10,123 @@ require('Comment').setup {
   },
 }
 
-local Terminal = require('toggleterm.terminal').Terminal
+-- keybindings
+local tele = require 'telescope.builtin'
+local nx = { 'n', 'x' }
+local nv = { 'n', 'v' }
+require('which-key').add {
+  -- nav
+  { '<C-h>', require('smart-splits').move_cursor_left },
+  { '<C-j>', require('smart-splits').move_cursor_down },
+  { '<C-k>', require('smart-splits').move_cursor_up },
+  { '<C-l>', require('smart-splits').move_cursor_right },
+  { '-', '<Cmd>split<CR>' },
+  { '|', '<Cmd>vsplit<CR>' },
+  { '<C-w>=', '<Cmd>WindowsEqualize<CR>' },
+  { '<C-w>+', '<Cmd>WindowsMaximize<CR>' },
+  --- toggle term
+  { '\\', '<Cmd>execute v:count . "ToggleTerm"<CR>' },
+  { '\\', '<Cmd>ToggleTerm<CR>', mode = 't' },
+  -- code
+  { '<leader>c', group = '[C]ode', mode = nx },
+  { '<Leader>cv', '<cmd>VenvSelect<cr>' },
+  { '<leader>u', group = '[U]ser Interface' },
+  { '<leader>b', group = '[B]uffers' },
+  { '<leader>bp', '<Cmd>BufferPick<CR>', desc = '[B]uffer [P]ick' },
+  { '<leader>bx', '<Cmd>BufferPickDelete<CR>', desc = '[B]uffer to [x]' },
+  { '<leader>f', group = '[F]ind' },
+  { '<leader>fe', '<Cmd>Neotree toggle<CR>', desc = '[F]ind t[E]lescope', silent = true },
+  { '<leader>fh', tele.help_tags, desc = '[F]ind [H]elp' },
+  { '<leader>fk', tele.keymaps, desc = '[F]ind [K]eymaps' },
+  { '<leader>ff', tele.find_files, desc = '[F]ind [F]iles' },
+  { '<leader>ft', tele.builtin, desc = '[F]ind a [T]elescope' },
+  { '<leader>fw', tele.live_grep, desc = '[F]ind by [\\w]ord (Grep)' },
+  { '<leader>fd', tele.diagnostics, desc = '[F]ind [D]iagnostics' },
+  {
+    '<leader>fo',
+    function()
+      tele.oldfiles { only_cwd = true }
+    end,
+    desc = '[F]ind [O]ld files',
+  },
+  {
+    '<leader>fO',
+    function()
+      tele.oldfiles { only_cwd = false }
+    end,
+    desc = '[F]ind [O]ld files from everywhere',
+  },
+  { '<leader>f.', tele.resume, desc = '[F]ind Recent Files ("." for repeat)' },
+  {
+    '<leader>/',
+    function()
+      -- You can pass additional configuration to Telescope to change the theme, layout, etc.
+      tele.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+        winblend = 10,
+        previewer = false,
+      })
+    end,
+    desc = '[/] Fuzzily search in current buffer',
+  },
+  -- Open in the current file's parent
+  {
+    '<leader>f-',
+    '<cmd>Yazi<cr>',
+    mode = nv,
+    desc = '[F]ind using [Y]azi',
+  },
+  {
+    '<leader>f_', -- Open in the current working directory
+    '<cmd>Yazi cwd<cr>',
+    desc = '[F]ind using [Y]azi in the cwd',
+  },
+  { '<leader>g', '<Cmd>lua _lazygit_toggle()<CR>', desc = 'ToggleTerm lazygit' },
+  -- Debug
+  { '<leader>d', group = '[D]ebug' },
+  { '<leader>dm', '<Cmd>lua require("neotest").run.run { strategy = "dap" }<CR>', desc = '[D]ebug Test [M]ethod' },
+  { '<leader>db', '<Cmd>lua require("dap").toggle_breakpoint()<CR>', desc = '[D]ebug: [B]reakpoint' },
+  { '<leader>dc', '<Cmd>lua require("dap").continue()<CR>', desc = '[D]ebug: [C]ontinue' },
+  { '<leader>dd', '<Cmd>lua require("dap").step_into()<CR>', desc = 'Debug: Step Into' },
+  { '<leader>do', '<Cmd>lua require("dap").step_over()<CR>', desc = 'Debug: Step Over' },
+  { '<leader>dr', '<Cmd>lua require("dap").step_out()<CR>', desc = 'Debug: Step Out' },
+  { '<leader>du', '<Cmd>lua require("dapui").toggle()<CR>', desc = 'Debug: See last session result.' },
+  { '<leader>dv', '<Cmd>lua require("dap-view").toggle()<CR>', desc = 'dap-view toggle' },
+  -- Hop
+  {
+    'f',
+    function()
+      require('hop').hint_words { multi_windows = true }
+    end,
+    mode = { 'n' },
+    desc = 'Hop hint words',
+  },
+  {
+    '<S-f>',
+    function()
+      require('hop').hint_lines { multi_windows = true }
+    end,
+    mode = { 'n' },
+    desc = 'Hop hint lines',
+  },
+  {
+    'f',
+    function()
+      require('hop').hint_words { extend_visual = true }
+    end,
+    mode = { 'v' },
+    desc = 'Hop hint words',
+  },
+  {
+    '<S-f>',
+    function()
+      require('hop').hint_lines { extend_visual = true }
+    end,
+    mode = { 'v' },
+    desc = 'Hop hint lines',
+  },
+}
 
+local Terminal = require('toggleterm.terminal').Terminal
 local lazygit = Terminal:new {
   cmd = 'lazygit',
   dir = 'git_dir',
@@ -47,7 +140,7 @@ local lazygit = Terminal:new {
     vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>', { noremap = true, silent = true })
   end,
   -- function to run on closing the terminal
-  on_close = function(term)
+  on_close = function()
     vim.cmd 'startinsert!'
   end,
 }
@@ -56,27 +149,13 @@ function _lazygit_toggle()
   lazygit:toggle()
 end
 
-vim.api.nvim_set_keymap('n', '<leader>g', '<cmd>lua _lazygit_toggle()<CR>', { noremap = true, silent = true })
-
-wk.add {
-  { '<leader>d', group = '[D]ebug' },
-  { '<leader>dm', '<Cmd>lua require("neotest").run.run { strategy = "dap" }<CR>', desc = 'Debug Test' },
-  { '<leader>db', '<Cmd>lua require("dap").toggle_breakpoint()<CR>', desc = 'Debug: Toggle Breakpoint' },
-  { '<leader>dc', '<Cmd>lua require("dap").continue()<CR>', desc = 'Debug: Start/Continue' },
-  { '<leader>dd', '<Cmd>lua require("dap").step_into()<CR>', desc = 'Debug: Step Into' },
-  { '<leader>do', '<Cmd>lua require("dap").step_over()<CR>', desc = 'Debug: Step Over' },
-  { '<leader>dr', '<Cmd>lua require("dap").step_out()<CR>', desc = 'Debug: Step Out' },
-  { '<leader>du', '<Cmd>lua require("dapui").toggle()<CR>', desc = 'Debug: See last session result.' },
-  { '<leader>dv', '<Cmd>lua require("dap-view").toggle()<CR>', desc = 'dap-view toggle' },
-  { '<leader>g', '<Cmd>lua _lazygit_toggle()<CR>', desc = 'ToggleTerm lazygit' },
-}
-
 -- set colorscheme
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
     vim.cmd.colorscheme 'kanagawa'
   end,
 })
+
 -- set resession to work within a directory
 local resession = require 'resession'
 vim.api.nvim_create_autocmd('VimEnter', {
@@ -100,6 +179,5 @@ vim.api.nvim_create_autocmd('StdinReadPre', {
     vim.g.using_stdin = true
   end,
 })
-
 -- return plugins (this is a polish file, so we don't need to return anything)
 return {}
