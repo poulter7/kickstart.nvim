@@ -292,13 +292,46 @@ return {
       require('venv-selector').setup()
     end,
     keys = {
-      { ',v', '<cmd>VenvSelect<cr>' },
+      { '<Leader>cv', '<cmd>VenvSelect<cr>' },
     },
   },
   {
     'numToStr/Comment.nvim',
+    lazy = false,
+    opts = {},
+  },
+  {
+    'mikavilpas/yazi.nvim',
+    event = 'VeryLazy',
+    keys = {
+      -- 👇 in this section, choose your own keymappings!
+      {
+        '<leader>f-',
+        mode = { 'n', 'v' },
+        '<cmd>Yazi<cr>',
+        desc = '[F]ind using [Y]azi',
+      },
+      {
+        -- Open in the current working directory
+        '<leader>f_',
+        '<cmd>Yazi cwd<cr>',
+        desc = '[F]ind using [Y]azi in the cwd',
+      },
+
+      {
+        -- NOTE: this requires a version of yazi that includes
+        -- https://github.com/sxyazi/yazi/pull/1305 from 2024-07-18
+        '<c-up>',
+        '<cmd>Yazi toggle<cr>',
+        desc = 'Resume the last yazi session',
+      },
+    },
     opts = {
-      -- add any options here
+      -- if you want to open yazi instead of netrw, see below for more info
+      open_for_directories = false,
+      keymaps = {
+        show_help = '<f1>',
+      },
     },
   },
 }

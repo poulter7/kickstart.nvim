@@ -21,6 +21,17 @@ wk.add {
 vim.keymap.set('n', '<Leader>bb', '<Cmd>BufferPick<CR>')
 vim.keymap.set('n', '<Leader>bD', '<Cmd>BufferPickDelete<CR>')
 
+require('Comment').setup {
+  toggler = {
+    line = '<Leader>cc',
+    block = '<Leader>cb',
+  },
+  opleader = {
+    line = '<Leader>cc',
+    block = '<Leader>cb',
+  },
+}
+
 local Terminal = require('toggleterm.terminal').Terminal
 
 local lazygit = Terminal:new {
