@@ -31,6 +31,7 @@ require('which-key').add {
   { '<leader>c', group = '[C]ode', mode = nx },
   { '<Leader>cv', '<cmd>VenvSelect<cr>' },
   { '<leader>u', group = '[U]ser Interface' },
+  { '<leader>ut', '<Cmd>neotest summary<CR>', desc = 'UI: toggle neotest summary' },
   { '<leader>b', group = '[B]uffers' },
   { '<leader>bp', '<Cmd>BufferPick<CR>', desc = '[B]uffer [P]ick' },
   { '<leader>bx', '<Cmd>BufferPickDelete<CR>', desc = '[B]uffer to [x]' },
