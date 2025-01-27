@@ -31,7 +31,6 @@ require('which-key').add {
   { '<leader>c', group = '[C]ode', mode = nx },
   { '<leader>a', group = '[A]rrow', mode = nx },
   { '<Leader>cv', '<cmd>VenvSelect<cr>' },
-  { '<Leader>ca', group = '[C]ode [A]vante' },
   { '<leader>u', group = '[U]ser Interface' },
   { '<leader>ut', '<Cmd>Neotest summary<CR>', desc = 'UI: toggle neotest summary' },
   { '<leader>b', group = '[B]uffers' },
@@ -152,10 +151,11 @@ function _lazygit_toggle()
   lazygit:toggle()
 end
 
--- set colorscheme
+--Post-init
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
     vim.cmd.colorscheme 'kanagawa'
+    vim.cmd 'VimadeFocus'
   end,
 })
 
@@ -182,6 +182,8 @@ vim.api.nvim_create_autocmd('StdinReadPre', {
     vim.g.using_stdin = true
   end,
 })
+
+-- Arrow handlers to get buffer -> line -> hop functionality
 vim.api.nvim_create_autocmd('User', {
   pattern = 'ArrowOpenFile',
   callback = function(e)
