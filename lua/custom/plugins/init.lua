@@ -304,9 +304,8 @@ return {
     },
     opts = {
       show_icons = true,
-      leader_key = '<leader>aa', -- Recommended to be a single key
-      buffer_leader_key = '<leader>am', -- Per Buffer Mappings
-      all_buffers_leader_key = "'",
+      leader_key = '\t', -- Recommended to be a single key
+      buffer_leader_key = '<S-\t>', -- Per Buffer Mappings
     },
   },
   {
