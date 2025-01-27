@@ -2,7 +2,6 @@
 --  I promise not to create any merge conflicts in this directory :)
 --
 -- See the kickstart.nvim README for more information
-
 local function list_insert_unique(dst, src)
   if not dst then
     dst = {}
@@ -105,7 +104,7 @@ return {
   {
     'zbirenbaum/copilot.lua',
     opts = {
-      suggestion = { enabled = true, auto_trigger = true, keymap = { accept = '<C-l>' } },
+      suggestion = { enabled = true, auto_trigger = true, keymap = { accept = '<C-Enter>' } },
       panel = { enabled = false },
     },
   },
@@ -253,7 +252,7 @@ return {
   {
     'numToStr/Comment.nvim',
     lazy = false,
-    opts = {},
+    config = true,
   },
   {
     'mikavilpas/yazi.nvim',
@@ -294,5 +293,51 @@ return {
       local cmp = require 'cmp'
       cmp.event:on('confirm_done', cmp_autopairs.on_confirm_done())
     end,
+  },
+  {
+    'poulter7/arrow.nvim',
+    dir = '~/Code/projects/arrow.nvim',
+    dependencies = {
+      { 'nvim-tree/nvim-web-devicons' },
+      -- or if using `mini.icons`
+      -- { "echasnovski/mini.icons" },
+    },
+    opts = {
+      show_icons = true,
+      leader_key = '<leader>aa', -- Recommended to be a single key
+      buffer_leader_key = '<leader>am', -- Per Buffer Mappings
+      all_buffers_leader_key = "'",
+    },
+  },
+  {
+    'folke/lazydev.nvim',
+    ft = 'lua', -- only load on lua files
+    opts = {
+      library = {
+        -- See the configuration section for more details
+        -- Load luvit types when the `vim.uv` word is found
+        { path = '${3rd}/luv/library', words = { 'vim%.uv' } },
+      },
+    },
+  },
+  { -- optional cmp completion source for require statements and module annotations
+    'hrsh7th/nvim-cmp',
+    opts = function(_, opts)
+      opts.sources = opts.sources or {}
+      table.insert(opts.sources, {
+        name = 'lazydev',
+        group_index = 0, -- set group index to 0 to skip loading LuaLS completions
+      })
+    end,
+  },
+  {
+    'joshuavial/aider.nvim',
+    opts = {
+      -- your configuration comes here
+      -- if you don't want to use the default settings
+      auto_manage_context = true, -- automatically manage buffer context
+      default_bindings = true, -- use default <leader>A keybindings
+      debug = false, -- enable debug logging
+    },
   },
 }

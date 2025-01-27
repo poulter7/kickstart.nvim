@@ -1,4 +1,4 @@
---- buffer pick
+-- buffer pick
 require('Comment').setup {
   toggler = {
     line = '<Leader>cc',
@@ -10,12 +10,12 @@ require('Comment').setup {
   },
 }
 
--- keybindings
+--- keybindings
 local tele = require 'telescope.builtin'
 local nx = { 'n', 'x' }
 local nv = { 'n', 'v' }
+
 require('which-key').add {
-  -- nav
   { '<C-h>', require('smart-splits').move_cursor_left },
   { '<C-j>', require('smart-splits').move_cursor_down },
   { '<C-k>', require('smart-splits').move_cursor_up },
@@ -29,9 +29,11 @@ require('which-key').add {
   { '\\', '<Cmd>ToggleTerm<CR>', mode = 't' },
   -- code
   { '<leader>c', group = '[C]ode', mode = nx },
+  { '<leader>a', group = '[A]rrow', mode = nx },
   { '<Leader>cv', '<cmd>VenvSelect<cr>' },
+  { '<Leader>ca', group = '[C]ode [A]vante' },
   { '<leader>u', group = '[U]ser Interface' },
-  { '<leader>ut', '<Cmd>neotest summary<CR>', desc = 'UI: toggle neotest summary' },
+  { '<leader>ut', '<Cmd>Neotest summary<CR>', desc = 'UI: toggle neotest summary' },
   { '<leader>b', group = '[B]uffers' },
   { '<leader>bp', '<Cmd>BufferPick<CR>', desc = '[B]uffer [P]ick' },
   { '<leader>bx', '<Cmd>BufferPickDelete<CR>', desc = '[B]uffer to [x]' },
@@ -178,6 +180,26 @@ vim.api.nvim_create_autocmd('StdinReadPre', {
   callback = function()
     -- Store this for later
     vim.g.using_stdin = true
+  end,
+})
+vim.api.nvim_create_autocmd('User', {
+  pattern = 'ArrowOpenFile',
+  callback = function(e)
+    vim.schedule(function()
+      local bfr = vim.api.nvim_get_current_buf()
+      local bookmarks = require('arrow.buffer_persist').get_bookmarks_by(bfr)
+      if #bookmarks > 0 then
+        require('arrow.buffer_ui').openMenu(bfr)
+      end
+    end)
+  end,
+})
+vim.api.nvim_create_autocmd('User', {
+  pattern = 'ArrowGoToBookmark',
+  callback = function(e)
+    vim.schedule(function()
+      require('hop').hint_words { multi_windows = false }
+    end)
   end,
 })
 -- return plugins (this is a polish file, so we don't need to return anything)
