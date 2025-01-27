@@ -101,13 +101,14 @@ return {
     'smoka7/hop.nvim',
     opts = {},
   },
-  {
-    'zbirenbaum/copilot.lua',
-    opts = {
-      suggestion = { enabled = true, auto_trigger = true, keymap = { accept = '<C-Enter>' } },
-      panel = { enabled = false },
-    },
-  },
+  -- co-pilot will rot your brain
+  -- {
+  --   'zbirenbaum/copilot.lua',
+  --   opts = {
+  --     suggestion = { enabled = true, auto_trigger = true, keymap = { accept = '<C-Enter>' } },
+  --     panel = { enabled = false },
+  --   },
+  -- },
   {
     'rcarriga/nvim-dap-ui',
   },
