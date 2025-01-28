@@ -155,7 +155,7 @@ end
 vim.api.nvim_create_autocmd('VimEnter', {
   callback = function()
     vim.cmd.colorscheme 'kanagawa'
-    vim.cmd 'VimadeFocus'
+    -- vim.cmd 'VimadeFocus' -- this breaks ToggleTerm form now
   end,
 })
 
@@ -196,13 +196,13 @@ vim.api.nvim_create_autocmd('User', {
     end)
   end,
 })
-vim.api.nvim_create_autocmd('User', {
-  pattern = 'ArrowGoToBookmark',
-  callback = function(e)
-    vim.schedule(function()
-      require('hop').hint_words { multi_windows = false }
-    end)
-  end,
-})
+-- vim.api.nvim_create_autocmd('User', {
+--   pattern = 'ArrowGoToBookmark',
+--   callback = function(e)
+--     vim.schedule(function()
+--       require('hop').hint_words { multi_windows = false }
+--     end)
+--   end,
+-- })
 -- return plugins (this is a polish file, so we don't need to return anything)
 return {}
