@@ -21,6 +21,34 @@ end
 
 return {
   {
+    'mrjones2014/smart-splits.nvim',
+  },
+  {
+    'numToStr/Comment.nvim',
+    lazy = false,
+    config = true,
+  },
+  {
+    'stevearc/resession.nvim',
+    opts = {},
+  },
+  {
+    'akinsho/toggleterm.nvim',
+    commit = '193786e0371e3286d3bc9aa0079da1cd41beaa62',
+    opts = function(opts)
+      opts.direction = 'float'
+      return opts
+    end,
+  },
+  {
+    'tadaa/vimade',
+    -- default opts (you can partially set these or configure them however you like)
+    opts = {
+      fadelevel = 0.7, -- any value between 0 and 1. 0 is hidden and 1 is opaque.
+      -- ncmode = 'focus',
+    },
+  },
+  {
     'anuvyklack/windows.nvim',
     dependencies = {
       'anuvyklack/middleclass',
@@ -30,17 +58,6 @@ return {
       ignore = {
         buftype = { 'quickfix', 'nofile' }, -- nofile is for neotest's main buffer
         filetype = { 'NvimTree', 'neo-tree', 'undotree', 'gundo' },
-      },
-    },
-  },
-  {
-    'nvim-zh/colorful-winsep.nvim',
-    config = true,
-    event = { 'BufEnter' },
-    opts = {
-      smooth = false,
-      hi = {
-        fg = '#e98a00',
       },
     },
   },
@@ -57,6 +74,58 @@ return {
         end,
       }
     end,
+  },
+  -- co-pilot will rot your brain
+  -- {
+  --   'zbirenbaum/copilot.lua',
+  --   opts = {
+  --     suggestion = { enabled = true, auto_trigger = true, keymap = { accept = '<C-Enter>' } },
+  --     panel = { enabled = false },
+  --   },
+  -- },
+  {
+    'nvim-neotest/neotest',
+    dependencies = {
+      'nvim-neotest/nvim-nio',
+      'nvim-lua/plenary.nvim',
+      'antoinemadec/FixCursorHold.nvim',
+      'nvim-treesitter/nvim-treesitter',
+      'nvim-neotest/neotest-python',
+    },
+    config = function()
+      require('neotest').setup {
+        adapters = {
+          require 'neotest-python' {
+            dap = { justMyCode = false },
+          },
+        },
+      }
+    end,
+  },
+  {
+    'rcarriga/nvim-dap-ui',
+  },
+  {
+    'neovim/nvim-lspconfig',
+    opts = {
+      servers = {
+        pyright = {
+          enabled = false,
+        },
+        basedpyright = {},
+      },
+    },
+  },
+  {
+    'nvim-zh/colorful-winsep.nvim',
+    config = true,
+    event = { 'BufEnter' },
+    opts = {
+      smooth = false,
+      hi = {
+        fg = '#e98a00',
+      },
+    },
   },
   {
     'romgrk/barbar.nvim',
@@ -101,63 +170,6 @@ return {
     'smoka7/hop.nvim',
     opts = {},
   },
-  -- co-pilot will rot your brain
-  -- {
-  --   'zbirenbaum/copilot.lua',
-  --   opts = {
-  --     suggestion = { enabled = true, auto_trigger = true, keymap = { accept = '<C-Enter>' } },
-  --     panel = { enabled = false },
-  --   },
-  -- },
-  {
-    'rcarriga/nvim-dap-ui',
-  },
-  {
-    'nvim-neotest/neotest',
-    dependencies = {
-      'nvim-neotest/nvim-nio',
-      'nvim-lua/plenary.nvim',
-      'antoinemadec/FixCursorHold.nvim',
-      'nvim-treesitter/nvim-treesitter',
-      'nvim-neotest/neotest-python',
-    },
-    config = function()
-      require('neotest').setup {
-        adapters = {
-          require 'neotest-python' {
-            dap = { justMyCode = false },
-          },
-        },
-      }
-    end,
-  },
-  {
-    'neovim/nvim-lspconfig',
-    opts = {
-      servers = {
-        pyright = {
-          enabled = false,
-        },
-        basedpyright = {},
-      },
-    },
-  },
-  {
-    'tadaa/vimade',
-    -- default opts (you can partially set these or configure them however you like)
-    opts = {
-      fadelevel = 0.7, -- any value between 0 and 1. 0 is hidden and 1 is opaque.
-      ncmode = 'focus',
-    },
-  },
-  {
-    'akinsho/toggleterm.nvim',
-    commit = '193786e0371e3286d3bc9aa0079da1cd41beaa62',
-    opts = function(opts)
-      opts.direction = 'float'
-      return opts
-    end,
-  },
   {
     'rebelot/heirline.nvim',
     opts = function(_, opts)
@@ -177,13 +189,6 @@ return {
     config = function()
       require('autosave').setup {}
     end,
-  },
-  {
-    'stevearc/resession.nvim',
-    opts = {},
-  },
-  {
-    'mrjones2014/smart-splits.nvim',
   },
   {
     'mfussenegger/nvim-dap-python',
@@ -250,11 +255,6 @@ return {
     config = function()
       require('venv-selector').setup()
     end,
-  },
-  {
-    'numToStr/Comment.nvim',
-    lazy = false,
-    config = true,
   },
   {
     'mikavilpas/yazi.nvim',
@@ -332,13 +332,40 @@ return {
     end,
   },
   {
-    'joshuavial/aider.nvim',
+    'olimorris/codecompanion.nvim',
+    dependencies = {
+      'nvim-lua/plenary.nvim',
+      'nvim-treesitter/nvim-treesitter',
+    },
     opts = {
-      -- your configuration comes here
-      -- if you don't want to use the default settings
-      auto_manage_context = true, -- automatically manage buffer context
-      default_bindings = true, -- use default <leader>A keybindings
-      debug = false, -- enable debug logging
+      adapters = {
+        qwen2 = function()
+          return require('codecompanion.adapters').extend('ollama', {
+            name = 'qwen2', -- Give this adapter a different name to differentiate it from the default ollama adapter
+            schema = {
+              model = {
+                default = 'qwen2.5-coder:32b',
+              },
+              num_ctx = {
+                default = 16384,
+              },
+              num_predict = {
+                default = -1,
+              },
+            },
+          })
+        end,
+      },
+      strategies = {
+        -- Change the default chat adapter
+        chat = {
+          adapter = 'qwen2',
+        },
+      },
+      opts = {
+        -- Set debug logging
+        log_level = 'DEBUG',
+      },
     },
   },
 }
