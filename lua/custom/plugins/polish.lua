@@ -93,6 +93,7 @@ require('which-key').add {
   { '<leader>dr', '<Cmd>lua require("dap").step_out()<CR>', desc = 'Debug: Step Out' },
   { '<leader>du', '<Cmd>lua require("dapui").toggle()<CR>', desc = 'Debug: See last session result.' },
   { '<leader>dv', '<Cmd>lua require("dap-view").toggle()<CR>', desc = 'dap-view toggle' },
+  { '<leader>ua', '<Cmd>lua _aider_toggle()<CR>', desc = 'ToggleTerm aider' },
   -- Hop
   {
     'f',
@@ -129,6 +130,23 @@ require('which-key').add {
 }
 
 local Terminal = require('toggleterm.terminal').Terminal
+local aider = Terminal:new {
+  dir = 'git_dir',
+  direction = 'float',
+  float_opts = {
+    border = 'double',
+  },
+  -- function to run on opening the terminal
+  on_open = function(term)
+    vim.cmd 'startinsert!'
+    vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>', { noremap = true, silent = true })
+  end,
+  -- function to run on closing the terminal
+  on_close = function()
+    vim.cmd 'startinsert!'
+  end,
+}
+local Terminal = require('toggleterm.terminal').Terminal
 local lazygit = Terminal:new {
   cmd = 'lazygit',
   dir = 'git_dir',
@@ -149,6 +167,9 @@ local lazygit = Terminal:new {
 
 function _lazygit_toggle()
   lazygit:toggle()
+end
+function _aider_toggle()
+  aider:toggle()
 end
 
 --Post-init
