@@ -338,19 +338,12 @@ return {
     },
     opts = {
       adapters = {
-        qwen2 = function()
-          return require('codecompanion.adapters').extend('ollama', {
-            name = 'qwen2', -- Give this adapter a different name to differentiate it from the default ollama adapter
-            schema = {
-              model = {
-                default = 'qwen2.5-coder:32b',
-              },
-              num_ctx = {
-                default = 16384,
-              },
-              num_predict = {
-                default = -1,
-              },
+        hosted = function()
+          return require('codecompanion.adapters').extend('openai_compatible', {
+            env = {
+              url = 'http://127.0.0.1:8080',
+              api_key = 'key',
+              chat_url = '/v1/chat/completions',
             },
           })
         end,
@@ -358,7 +351,7 @@ return {
       strategies = {
         -- Change the default chat adapter
         chat = {
-          adapter = 'qwen2',
+          adapter = 'hosted',
         },
       },
       opts = {

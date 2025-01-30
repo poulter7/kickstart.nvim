@@ -15,7 +15,10 @@ local tele = require 'telescope.builtin'
 local nx = { 'n', 'x' }
 local nv = { 'n', 'v' }
 
+-- Expand 'cc' into 'CodeCompanion' in the command line
+vim.cmd [[cab cc CodeCompanion]]
 require('which-key').add {
+  --
   { '<C-h>', require('smart-splits').move_cursor_left },
   { '<C-j>', require('smart-splits').move_cursor_down },
   { '<C-k>', require('smart-splits').move_cursor_up },
@@ -24,6 +27,10 @@ require('which-key').add {
   { '|', '<Cmd>vsplit<CR>' },
   { '<C-w>=', '<Cmd>WindowsEqualize<CR>' },
   { '<C-w>+', '<Cmd>WindowsMaximize<CR>' },
+  -- CodeCompanion
+  { '<C-a>', '<Cmd>CodeCompanionActions<CR>' },
+  { '<Leader>a', '<Cmd>CodeCompanionChat Toggle<CR>' },
+  { 'ga', '<Cmd>CodeCompanionChat<CR>' },
   --- toggle term
   { '\\', '<Cmd>execute v:count . "ToggleTerm"<CR>' },
   { '\\', '<Cmd>ToggleTerm<CR>', mode = 't' },
@@ -82,7 +89,6 @@ require('which-key').add {
     '<cmd>Yazi cwd<cr>',
     desc = '[F]ind using [Y]azi in the cwd',
   },
-  { '<leader>g', '<Cmd>lua _lazygit_toggle()<CR>', desc = 'ToggleTerm lazygit' },
   -- Debug
   { '<leader>d', group = '[D]ebug' },
   { '<leader>dm', '<Cmd>lua require("neotest").run.run { strategy = "dap" }<CR>', desc = '[D]ebug Test [M]ethod' },
@@ -130,23 +136,6 @@ require('which-key').add {
 }
 
 local Terminal = require('toggleterm.terminal').Terminal
-local aider = Terminal:new {
-  dir = 'git_dir',
-  direction = 'float',
-  float_opts = {
-    border = 'double',
-  },
-  -- function to run on opening the terminal
-  on_open = function(term)
-    vim.cmd 'startinsert!'
-    vim.api.nvim_buf_set_keymap(term.bufnr, 'n', 'q', '<cmd>close<CR>', { noremap = true, silent = true })
-  end,
-  -- function to run on closing the terminal
-  on_close = function()
-    vim.cmd 'startinsert!'
-  end,
-}
-local Terminal = require('toggleterm.terminal').Terminal
 local lazygit = Terminal:new {
   cmd = 'lazygit',
   dir = 'git_dir',
@@ -167,9 +156,6 @@ local lazygit = Terminal:new {
 
 function _lazygit_toggle()
   lazygit:toggle()
-end
-function _aider_toggle()
-  aider:toggle()
 end
 
 --Post-init
